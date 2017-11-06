@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 """
 Created on Sat Nov 04 18:38:43 2017
@@ -13,7 +12,25 @@ import sys
 import numpy as np
 
 def buildTree(score, back):
-    
+    print "\nNew span: 1"
+    for i in range(len(score)):
+        print "\nIndices: " + str(i) + " " + str(i+1)
+        for item, pt in zip(score[i][i+1],back[i][i+1]):
+            if item > 0. and not pt == None:
+                    prob = "P(" + str(pt[1]) + ") = " + str(item)
+                    b    = " (BackPointer = (" + str(pt[0]) + ", " + str(pt[2]) + ", " + str(pt[3]) + ")"
+                    print prob + b
+    for span in range(2, len(score)+2):
+        print "\nNew span: " + str(span)
+        for begin in range(0, len(score)+1-span):
+            end = begin + span
+            print "\nIndicies: " + str(begin) + " " + str(end)
+            for item, pt in zip(score[begin][end],back[begin][end]):
+                if item > 0. and not pt == None:
+                    prob = "P(" + str(pt[1]) + ") = " + str(item)
+                    b    = " (BackPointer = (" + str(pt[0]) + ", " + str(pt[2]) + ", " + str(pt[3]) + ")"
+                    print prob + b
+                    
     return
 
 def CKY(grammar, sentences):
@@ -24,7 +41,6 @@ def CKY(grammar, sentences):
     #
     #build grammar dict
     keyI  = {}
-    words = []
     c     = 0
     for key in grammar:
         if key not in keyI:
@@ -36,7 +52,7 @@ def CKY(grammar, sentences):
         #Probabilistic scores
         score = np.zeros((len(sentence),len(sentence)+1, len(grammar)))
         #Back-pointers to parent data
-        back  = np.zeros((len(sentence),len(sentence)+1, len(grammar)))
+        back  = len(sentence)*[(len(sentence)+1)*[len(grammar)*[None]]]
         
         i = 0
         for word in sentence:
@@ -61,7 +77,7 @@ def CKY(grammar, sentences):
                             #print "P(" + str(B) + ")->" + str(A) + " = " + str(prob) 
                             if(prob > score[i][i+1][keyI[A]]):
                                 score[i][i+1][keyI[A]] = prob
-                                back[i][i+1][keyI[A]]  = 0#words[word]
+                                back[i][i+1][keyI[A]]  = B#words[word]
                                 print "P(" + str(A) + " " + str(word) + ") = " + str(prob)
                                 added = True
             i += 1
@@ -85,7 +101,7 @@ def CKY(grammar, sentences):
                                 prob = lop*mop*rop 
                                 if(prob > score[begin][end][keyI[A]]):
                                     score[begin][end][keyI[A]] = prob
-                                    back[begin][end][keyI[A]]  = 0#words[word]
+                                    back[begin][end][keyI[A]]  = (split, A, B, C)#words[word]
                                     print "P(" + str(A) + ")->" + str(C) + "+" + str(B) + " " + str(prob)
                 added = True
                 while(added):
@@ -106,6 +122,7 @@ def CKY(grammar, sentences):
                                 score[begin][end][keyI[A]] = prob
                                 back[begin][end][keyI[A]]  = 0#words[word]
                                 added = True
+    
     return buildTree(score, back)
         
 def checkDigit(digit):
@@ -212,4 +229,5 @@ def main():
         
         
 main()
+        
         
