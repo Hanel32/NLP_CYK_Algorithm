@@ -1,2 +1,2 @@
-# NLP_CKY_Algorithm
-Implementation of the CKY algorithm which parses parts of speech hierarchy structures from a specified grammar utilizing the Dynamic approach.
+# NLP_CYK_Algorithm
+Implementation of the CYK algorithm which parses parts of speech hierarchy structures from a specified grammar utilizing the Dynamic approach.
